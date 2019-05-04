@@ -1,8 +1,18 @@
 # STM32-LCD_PCD8544
 
 Configure your MCU using STM32CubeMX.
+
 SPI baud rate has to be 4 MBits/s. Adjust it using the Prescaler depending on you MCU base frequency.
+
+[figure1](./STM32CubeMX_spi_conf.png)
+
 Add 3 GPIO_Outputs for CE, DC, and RST pins of the LCD. It is convenient to locate them close to each other.
+
+[figure2](./Pins.jpg)
+
+Example of usage:
+
+```
 
 #include "lcd_pcd8544.h"
 
@@ -31,3 +41,4 @@ Add 3 GPIO_Outputs for CE, DC, and RST pins of the LCD. It is convenient to loca
   LCD_PCD8544_write_line(&gLcdScreen, 0, "Privet!");
   
 ...
+```
