@@ -10,6 +10,8 @@ Add 3 GPIO_Outputs for CE, DC, and RST pins of the LCD. It is convenient to loca
 
 [figure2](./Pins.jpg)
 
+Suitable for (tested on) the very popular cheap Chinese boards [STM32F103C8T6 "Blue Pill"](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill), [STM32FxCxT6 Board v5.02](https://stm32-base.org/boards/STM32F103C8T6-STM32FxCxT6-Board-V5.02), and [STM32F407VET6 - STM32 F4VE V2.0](https://stm32-base.org/boards/STM32F407VET6-STM32-F4VE-V2.0).
+
 Example of usage:
 
 ```
