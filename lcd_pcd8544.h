@@ -10,6 +10,10 @@
 
 #include "lcd_pcd8544_ll.h"
 
+// Number of lines used for push_line methods
+// Maximum 6 lines
+#define NUSEDLINES 6
+
 // =============================================================================
 // Global variables
 // =============================================================================

@@ -13,6 +13,7 @@ Add 3 GPIO_Outputs for CE, DC, and RST pins of the LCD. It is convenient to loca
 Suitable for (tested on) the very popular cheap Chinese boards [STM32F103C8T6 "Blue Pill"](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill), [STM32FxCxT6 Board v5.02](https://stm32-base.org/boards/STM32F103C8T6-STM32FxCxT6-Board-V5.02), and [STM32F407VET6 - STM32 F4VE V2.0](https://stm32-base.org/boards/STM32F407VET6-STM32-F4VE-V2.0).
 
 Example of usage:
+=================
 
 ```
 
@@ -20,9 +21,10 @@ Example of usage:
 
 ...
 
+  // LCD
   extern LCD_PCD8544_screen_t gLcdScreen;
 
-  // Assign pins
+  // LCD - assign SPI interface and pins
   gLcdScreen.mPinout.mSpiHandle = &hspi3;
   gLcdScreen.mPinout.mLcdSpiRstPort = LCD_RST_GPIO_Port;
   gLcdScreen.mPinout.mLcdSpiRstPin = LCD_RST_Pin;
@@ -34,13 +36,16 @@ Example of usage:
   gLcdScreen.mPinout.mLcdSpiDinPin = LCD_SPI_DIN_Pin;
   gLcdScreen.mPinout.mLcdSpiClkPort = LCD_SPI_CLK_GPIO_Port;
   gLcdScreen.mPinout.mLcdSpiClkPin = LCD_SPI_CLK_Pin;
-  gLcdScreen.mPinout.mLcdErrorLedPort = ONBOARD_LED_2_GPIO_Port;
-  gLcdScreen.mPinout.mLcdErrorLedPin = ONBOARD_LED_2_Pin;
+  gLcdScreen.mPinout.mLcdErrorLedPort = LCD_ERROR_LED_GPIO_Port;
+  gLcdScreen.mPinout.mLcdErrorLedPin = LCD_ERROR_LED_Pin;
 
-  // Initialize
+  // LCD - initialize
   LCD_PCD8544_init(&gLcdScreen);
 
+  // LCD - welcome screen
   LCD_PCD8544_write_line(&gLcdScreen, 0, "Privet!");
+  HAL_Delay(1000);
   
 ...
+
 ```

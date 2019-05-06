@@ -156,7 +156,27 @@ HAL_StatusTypeDef LCD_PCD8544_write_str(LCD_PCD8544_screen_t* scr, unsigned char
 
 HAL_StatusTypeDef LCD_PCD8544_write_line(LCD_PCD8544_screen_t* scr, unsigned char vIndex, const char* string)
 {
-	return LCD_PCD8544_write_str(scr, vIndex, 0, string);
+	unsigned short int strLen = strlen(string);
+	if (strLen > LCD_PCD8544_LINEWIDTH) { strLen = LCD_PCD8544_LINEWIDTH; } // cut to the right edge of the screen
+
+	//TODO check that initialization works; maybe better use memset?
+	unsigned char data[LCD_PCD8544_LINEWIDTH*LCD_PCD8544_CHAR_WIDTH]; // = { 0 };
+	memset(data, 0, sizeof(data));
+
+	// Translate the input string into the bit array using the font
+	unsigned short int nChars=0;
+	for ( ; nChars<strLen; nChars++) {
+		if (string[nChars] == '\0') {
+			//TODO check
+			break;
+		} else {
+			unsigned short int idx = (unsigned short int)(string[nChars]);
+			memcpy(&data[LCD_PCD8544_CHAR_WIDTH*nChars], &gFont6x8[LCD_PCD8544_CHAR_WIDTH*idx], LCD_PCD8544_CHAR_WIDTH);
+		}
+	}
+
+	// not sizeof(data) but strLen; this minimizes the size of the operation
+	return LCD_PCD8544_write_bytes(scr, vIndex, 0, data, sizeof(data));
 }
 
 //TODO implement correct return value of type HAL_StatusTypeDef
@@ -169,7 +189,7 @@ void LCD_PCD8544_push_line(LCD_PCD8544_screen_t* scr, const char* string)
 	strncpy(g_LCD_PCD8544_lines[0], string, LCD_PCD8544_LINEWIDTH);
 
 	// Print
-	for (unsigned short int i=0; i<LCD_PCD8544_NLINES/*-1*/; i++) { //FIXME -1 to exclude the last line
+	for (unsigned short int i=0; i<NUSEDLINES; i++) {
 		LCD_PCD8544_write_line(scr, i, g_LCD_PCD8544_lines[i]);
 	}
 }
@@ -186,7 +206,7 @@ HAL_StatusTypeDef LCD_PCD8544_push_line2(LCD_PCD8544_screen_t* scr, const char* 
 	//TODO check that initialization works; maybe better use memset?
 	unsigned char data[LCD_PCD8544_NLINES*LCD_PCD8544_LINEWIDTH*LCD_PCD8544_CHAR_WIDTH] = { 0 };
 
-	for (unsigned short int i=0; i<LCD_PCD8544_NLINES/*-1*/; i++) { //FIXME -1 to exclude the last line
+	for (unsigned short int i=0; i<NUSEDLINES; i++) {
 		for (unsigned short int j=0; j<LCD_PCD8544_LINEWIDTH; j++) {
 			unsigned short int idx = (unsigned short int)(g_LCD_PCD8544_lines[i][j]);
 			memcpy(&data[i*LCD_PCD8544_LINEWIDTH*LCD_PCD8544_CHAR_WIDTH+j*LCD_PCD8544_CHAR_WIDTH],
@@ -194,7 +214,7 @@ HAL_StatusTypeDef LCD_PCD8544_push_line2(LCD_PCD8544_screen_t* scr, const char* 
 		}
 	}
 
-	return LCD_PCD8544_write_bytes(scr, 0, 0, data, sizeof(data));
+	return LCD_PCD8544_write_bytes(scr, 0, 0, data, NUSEDLINES*LCD_PCD8544_LINEWIDTH*LCD_PCD8544_CHAR_WIDTH);
 }
 
 //TODO implement correct return value of type HAL_StatusTypeDef
